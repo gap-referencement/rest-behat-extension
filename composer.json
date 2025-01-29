@@ -1,0 +1,53 @@
+{
+    "name": "all-manager/rest-behat-extension",
+    "description": "A custom Behat extension to add specific functionalities.",
+    "type": "library",
+    "require": {
+        "php": ">=8.3",
+        "behat/behat": "^3.10",
+        "guzzlehttp/psr7": "^2.7",
+        "justinrainbow/json-schema": "^6.0",
+        "mtdowling/jmespath.php": "^2.8",
+        "php-http/client-common": "^2.7",
+        "php-http/discovery": "^1.20",
+        "symfony/property-access": "^7.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.6",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "AllManager\\RestBehatExtension\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AllManager\\RestBehatExtension\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "behat-extension": {
+            "class": "AllManager\\RestBehatExtension\\Extension"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "authors": [
+        {
+            "name": "All Manager",
+            "email": "contact@allmanager.com"
+        }
+    ],
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}

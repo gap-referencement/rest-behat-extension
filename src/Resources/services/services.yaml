@@ -1,0 +1,29 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    AllManager\RestBehatExtension\:
+        resource: '../../'
+
+    AllManager\RestBehatExtension\Rest\ApiBrowser:
+        public: true
+
+    AllManager\RestBehatExtension\Json\JsonInspector:
+        public: true
+
+    Http\Discovery\Psr17Factory:
+        public: true
+
+
+    AllManager\RestBehatExtension\Rest\ApiBrowserResolver:
+        arguments:
+            $apiBrowser: '@AllManager\RestBehatExtension\Rest\ApiBrowser'
+        tags:
+            - { name: 'context.argument_resolver' }
+
+    AllManager\RestBehatExtension\Json\JsonInspectorResolver:
+        arguments:
+            $jsonInspector: '@AllManager\RestBehatExtension\Json\JsonInspector'
+        tags:
+            - { name: 'context.argument_resolver' }
