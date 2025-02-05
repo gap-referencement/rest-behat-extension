@@ -160,6 +160,19 @@ class JsonContext implements Context
         });
     }
 
+    #[Then('the JSON node ":jsonNode" should be equal to')]
+    public function theJsonNodeShouldBeEqualToMultiLines(string $jsonNode, PyStringNode $expectedValue): void
+    {
+        $this->assert(function () use ($jsonNode, $expectedValue) {
+            $realValue = $this->evaluateJsonNodeValue($jsonNode);
+            $expectedValue = $this->evaluateExpectedValue($expectedValue);
+
+            if ($expectedValue != $realValue) {
+                throw new \InvalidArgumentException(sprintf('The node "%s" is "%s" but "%s" was expected.', $jsonNode, $realValue, $expectedValue));
+            }
+        });
+    }
+
     #[Then('the JSON should be equal to:')]
     public function theJsonShouldBeEqualTo(PyStringNode $jsonContent): void
     {
