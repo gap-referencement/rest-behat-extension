@@ -2,6 +2,7 @@
 
 namespace AllManager\RestBehatExtension;
 
+use AllManager\RestBehatExtension\Rest\ApiBrowser;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -15,10 +16,17 @@ class Extension implements ExtensionInterface
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/Resources/services'));
         $loader->load('services.yaml');
+
+        $container->findDefinition(ApiBrowser::class)->setBindings(['$host' => $config['host']]);
     }
 
     public function configure(ArrayNodeDefinition $builder): void
     {
+        $builder
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('host')->defaultValue('http://web')->end()
+        ;
     }
 
     public function getConfigKey(): string
