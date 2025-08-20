@@ -26,7 +26,6 @@ class Extension implements ExtensionInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('host')->defaultValue('http://web')->end()
-            ->end()
         ;
     }
 
