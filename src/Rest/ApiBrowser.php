@@ -19,7 +19,7 @@ final class ApiBrowser
     public function __construct(
         private Psr17Factory $messageFactory,
         private JsonStorage $responseStorage,
-        private string $host = 'http://web',
+        private string $host,
         private ?ClientInterface $httpClient = null,
     ) {
         $this->httpClient = $httpClient ?: Psr18ClientDiscovery::find();
