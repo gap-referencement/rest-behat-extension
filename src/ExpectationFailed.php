@@ -2,7 +2,7 @@
 
 namespace AllManager\RestBehatExtension;
 
-abstract class ExpectationFailed extends \Exception
+abstract class ExpectationFailed extends \Exception implements \Stringable
 {
     abstract public function getContextText(): false|string;
 
