@@ -4,7 +4,7 @@ namespace AllManager\RestBehatExtension\Json;
 
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-class Json
+class Json implements \Stringable
 {
     private mixed $content;
 
