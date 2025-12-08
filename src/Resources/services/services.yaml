@@ -21,6 +21,12 @@ services:
         tags:
             - { name: 'context.argument_resolver' }
 
+    AllManager\RestBehatExtension\OpenApi\OpenApiInitializer:
+        arguments:
+            $apiBrowser: '@AllManager\RestBehatExtension\Rest\ApiBrowser'
+        tags:
+            - { name: 'context.initializer' }
+
     AllManager\RestBehatExtension\Json\JsonInspectorResolver:
         arguments:
             $jsonInspector: '@AllManager\RestBehatExtension\Json\JsonInspector'

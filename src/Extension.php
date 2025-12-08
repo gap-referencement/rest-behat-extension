@@ -2,6 +2,7 @@
 
 namespace AllManager\RestBehatExtension;
 
+use AllManager\RestBehatExtension\OpenApi\OpenApiInitializer;
 use AllManager\RestBehatExtension\Rest\ApiBrowser;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
@@ -18,6 +19,9 @@ class Extension implements ExtensionInterface
         $loader->load('services.yaml');
 
         $container->findDefinition(ApiBrowser::class)->setBindings(['$host' => $config['host']]);
+        $container->findDefinition(OpenApiInitializer::class)->setBindings([
+            '$openApiFilePath' => $config['openapi_file_path'],
+        ]);
     }
 
     public function configure(ArrayNodeDefinition $builder): void
@@ -25,8 +29,8 @@ class Extension implements ExtensionInterface
         $builder
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('host')->defaultValue('http://web')->end()
-        ;
+            ->scalarNode('host')->defaultValue('http://web')->end()
+            ->scalarNode('openapi_file_path')->defaultValue('openapi.json')->end();
     }
 
     public function getConfigKey(): string
