@@ -8,15 +8,35 @@ use AllManager\RestBehatExtension\Rest\WrongResponseExpectation;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Hook\AfterScenario;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
 
 class ApiContext implements Context
 {
+    private static ?string $storedId = null;
+
     public function __construct(
         private ApiBrowser $apiBrowser,
     ) {
+    }
+
+    #[Then('I store the response id')]
+    public function iStoreTheResponseId(): void
+    {
+        $body = \json_decode(
+            json: $this->apiBrowser->getResponse()->getBody(),
+            associative: true,
+            flags: JSON_THROW_ON_ERROR
+        );
+        $id = $body['id'] ?? $body['items'][0]['id'] ?? null;
+
+        if (null === $id) {
+            throw new \InvalidArgumentException('Cannot find id on previous response');
+        }
+
+        self::$storedId = $id;
     }
 
     #[When('I send a :method request to :url')]
@@ -24,7 +44,7 @@ class ApiContext implements Context
         string $method,
         string $url,
     ): void {
-        $this->apiBrowser->sendRequest($method, $url);
+        $this->apiBrowser->sendRequest($method, $this->transformUrl($url));
     }
 
     #[When('I send a :method request to :url with body:')]
@@ -33,7 +53,7 @@ class ApiContext implements Context
         string $url,
         PyStringNode $body,
     ): void {
-        $this->apiBrowser->sendRequest($method, $url, $body->getRaw());
+        $this->apiBrowser->sendRequest($method, $this->transformUrl($url), $body->getRaw());
     }
 
     #[When('I send a POST request to :url as HTML form with body:')]
@@ -50,14 +70,14 @@ class ApiContext implements Context
             $formElements[] = $element;
         }
 
-        $this->apiBrowser->sendRequest('POST', $url, $formElements);
+        $this->apiBrowser->sendRequest('POST', $this->transformUrl($url), $formElements);
     }
 
+    #[\Deprecated('Use iSendARequest')]
     #[When('I send a :method request to :url with params in url')]
     public function iSendASpecialRequest(string $method, string $url): void
     {
-        $url = $this->transformUrl($url);
-        $this->apiBrowser->sendRequest($method, $url);
+        $this->iSendARequest($method, $url);
     }
 
     #[When('I send a :method request to :url with special body:')]
@@ -127,6 +147,12 @@ class ApiContext implements Context
         echo $this->buildHttpExchangeFormatter()->formatFullExchange();
     }
 
+    #[AfterScenario]
+    public function resetStoredValues(): void
+    {
+        self::$storedId = null;
+    }
+
     private function buildHttpExchangeFormatter(): HttpExchangeFormatter
     {
         return new HttpExchangeFormatter($this->apiBrowser->getRequest(), $this->apiBrowser->getResponse());
@@ -160,6 +186,10 @@ class ApiContext implements Context
             $url = $this->replaceIdFromPreviousResponse($url);
         }
 
+        if (str_contains($url, '__id_from_stored')) {
+            $url = $this->replaceIdFromStoredOne($url);
+        }
+
         return $url;
     }
 
@@ -184,5 +214,14 @@ class ApiContext implements Context
         }
 
         return str_replace('__id_from_previous_response', $id, $url);
+    }
+
+    private function replaceIdFromStoredOne(string $url): string
+    {
+        if (null === self::$storedId) {
+            throw new \InvalidArgumentException('Cannot find stored id on previous response');
+        }
+
+        return str_replace('__id_from_stored', self::$storedId, $url);
     }
 }
