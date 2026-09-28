@@ -39,6 +39,6 @@ class OpenAPIExpectationFailed extends ExpectationFailed
 
     public function getContextText(): false|string
     {
-        return json_decode($this->response->getBody(), true, flags: JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+        return json_encode(json_decode($this->response->getBody(), flags: JSON_THROW_ON_ERROR), JSON_PRETTY_PRINT);
     }
 }
