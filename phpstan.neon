@@ -6,6 +6,7 @@ parameters:
     ignoreErrors:
             -
                 identifier: missingType.generics
+                reportUnmatched: false
             -
                 message: '#no value type specified in iterable type#'
                 path: src/

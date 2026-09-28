@@ -18,6 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         php-versions: [ '8.3', '8.4' ]
+        behat-versions: [ '^3.10', '^4.0@alpha' ]
 
     steps:
     -  uses: actions/checkout@v4
@@ -36,12 +37,12 @@ jobs:
       uses: actions/cache@v4
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php-versions }}-behat-${{ matrix.behat-versions }}-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
-          ${{ runner.os }}-php-
+          ${{ runner.os }}-php-${{ matrix.php-versions }}-behat-${{ matrix.behat-versions }}-
 
     - name: Install dependencies
-      run: composer install --prefer-dist
+      run: composer require --prefer-dist --no-interaction -W "behat/behat:${{ matrix.behat-versions }}"
 
     - name: PHP Coding Standards Fixer
       run: PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer fix --dry-run
