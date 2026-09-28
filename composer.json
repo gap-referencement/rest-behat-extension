@@ -4,10 +4,10 @@
     "type": "library",
     "require": {
         "php": ">=8.3",
-        "behat/behat": "^3.10",
-        "guzzlehttp/psr7": "^2.7",
+        "behat/behat": "^3.10 || ^4.0",
+        "guzzlehttp/psr7": "^2.7 || ^3.0",
         "justinrainbow/json-schema": "^6.0",
-        "league/openapi-psr7-validator": "^0.22.0",
+        "league/openapi-psr7-validator": "^0.22 || ^0.23 || ^0.24",
         "mtdowling/jmespath.php": "^2.8",
         "php-http/client-common": "^2.7",
         "php-http/discovery": "^1.20",
